@@ -4,3 +4,7 @@ from django.utils import timezone
 
 class User(AbstractUser):
     pass
+
+# producten
+# product categorien
+# bestellingen

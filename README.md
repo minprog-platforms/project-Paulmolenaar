@@ -4,7 +4,7 @@
 
 ### Description
 
-Het idee is een webapplicatie te maken die het huren van thuiswerkmeubilair aanbiedt aan gebruikers. De gebruiker dient aan te geven naar wat voor type meubilair degene opzoek is, de beschikbare ruimte voor de meubel (afmetingen) en de woonlocatie op te geven. De website geeft een selectie aan producten die op dat moment beschikbaar zijn. De site berekent vervolgens de geschatte levertijd op basis van de website en de gebruiker's locatie. 
+Het idee is een webapplicatie te maken die het huren van thuiswerkmeubilair aanbiedt aan gebruikers. De gebruiker dient aan te geven naar wat voor type meubilair degene opzoek is, de beschikbare ruimte voor de meubel (afmetingen) en de woonlocatie op te geven. De website geeft een selectie aan producten die op dat moment beschikbaar zijn. De site berekent aan de hand van de locatie van de gebruiker/koper en de locatie van het magazijn de transportkosten.  
 
 #### Datasets
 * Een zelf opgemaakte data-set van apparatuur. Hier bij wordt de afmeting, afbeelding, prijs, beschikbaarheid en locatie opgeslagen.
@@ -15,7 +15,7 @@ Het idee is een webapplicatie te maken die het huren van thuiswerkmeubilair aanb
 * Overzicht meubel
 * Beschikbaarheid meubel
 * Retournering meubel waarna de beschikbaarheid weer terugkomt in de dataset
-* Berekenen geschatte levertijd o.b.v. locatie
+* Berekenen geschatte transportkosten o.b.v. locatie
 
 #### Potential features:
 * Marktplaats idee dat er tevens in tweede hands meubels 'gehandeld' kan worden.
@@ -27,5 +27,6 @@ Het idee is een webapplicatie te maken die het huren van thuiswerkmeubilair aanb
 * Flexitrentdistribution.com: Een bedrijf die zowel meubilair als apparatuur aanbiedt. 
 
 #### Hardest parts
-* Het bepalen van geschatte reis/levertijd van de meubel op basis van de locatie van het product en de user. 
+* Het bepalen van geschatte transportkosten van de meubel op basis van de locatie van het product en de user. 
+* Het genereren van de mogelijke meubels op basis van de kamerafmetingen die de gebruiker opgeeft.
 

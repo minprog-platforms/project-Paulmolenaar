@@ -10,6 +10,9 @@ from .models import *
 def index(request):    
     return render(request, "pages/index.html")
 
+def product(request):
+    return render(request, "pages/product.html")
+
 def kamer_inrichten(request):
     return render(request, "pages/inrichten.html")
 
