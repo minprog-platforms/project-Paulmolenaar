@@ -1,0 +1,49 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link href="{% static 'meubels/styles.css' %}" rel="stylesheet">
+    </head>
+    <body>        
+        <div class = "nav">   
+            <ul class="nav">
+                <h1>Thuiswerkmeubels.nl</h1>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'overons' %}">Over ons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'kamer_inrichten' %}">Samenstellen</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    </li>
+                    <li class="nav-item"> 
+                        <span>Signed in as <strong>{{ user.username }}</strong>.</span>
+                    </li>
+                    <li class="nav-item"> 
+                        <a class="nav-link" href="{% url 'winkelwagen' %}">Winkelwagen</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}   
+            </ul>    
+            <hr>
+        </div>
+        <div class="container mainContent">
+            {% block body %}
+            {% endblock %}
+        </div>
+    </body>
+</html>
