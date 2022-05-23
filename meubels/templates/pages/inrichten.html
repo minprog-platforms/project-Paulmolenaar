@@ -10,14 +10,13 @@
     <div class="row">
         <div class="col col-xs-12 col-sm-6">
             <form method="post">
+                {% csrf_token %}
                 <div class="row">
-                    <div class="col col-xs-12">
+                    <div class="col col-xs-12 dimensionsInput">
                         <label>
                             Afmetingen
                         </label> <br>
-                        Lengte <input class="dimensionsInput" type="number" name="lengte"  min="1" value="2" placeholder="Lengte van uw kamer"/><br>
-                        Breedte <input class="dimensionsInput" type="number" name="breedte" min="1" value="2" placeholder="Lengte van uw kamer"/><br>
-                        Hoogte <input class="dimensionsInput" type="number" name="breedte" min="1" value="2" placeholder="Lengte van uw kamer"/> 
+                        {{ afmetingenForm.as_p }}                            
                     </div>
                 </div>
                 <div class="row">

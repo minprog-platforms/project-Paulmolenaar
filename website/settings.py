@@ -120,3 +120,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Positionstack.om API settings
+
+POS_STACK_KEY = '0a49c3bb9f792478c704cf51c39340b4'

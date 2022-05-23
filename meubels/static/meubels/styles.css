@@ -44,7 +44,7 @@ h1 {
     margin-bottom: 15px;
     background-color: #fff;
 }
-.dimensionsInput{
+.dimensionsInput input{
     width:80px;
 }
 
