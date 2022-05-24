@@ -1,18 +1,18 @@
 {% extends "pages/layout.html" %}
 
 {% block body %}
-    <h1 class="titel">Productnaam</h1>
+    <h1 class="titel">{{product.naam}}</h1>
     <div class="row">
         <div class="col col-xs-12 col-sm-6">            
-            <img src="images/noimage.jpg"/>
+            <img src="{{product.afbeelding}}"/>
         </div>
         <div class="col col-xs-12 col-sm-6">            
-            <h2>Omschrijving</h2>
-            <p>Hier komt de omschrijving van dit product te staan</p>
+            <h3>Prijs: &euro;{{product.prijs}}/maand</h3>
+            <p>{{product.beschrijving}}</p>
             <hr>
-            <p>Afmetingen: 50x60x80cm</p>
-            <p>Categorie: Stoelen</p>
-            <a href="kamerinrichten">Terug</a>
+            <p>Afmetingen: {{product.afmeting_breedte}}x{{product.afmeting_lengte}}x{{product.afmeting_hoogte}}cm</p>
+            <p>Categorie: {{product.categorie.naam}}</p>
+            <a href="/kamerinrichten">Terug</a>  
         </div>
     </div>
 {% endblock %}

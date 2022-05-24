@@ -5,3 +5,5 @@ from .models import *
 admin.site.register(Producten)
 admin.site.register(Categorie)
 admin.site.register(Bestellingen)
+admin.site.register(KamerAfmetingen)
+admin.site.register(User)

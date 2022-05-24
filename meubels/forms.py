@@ -3,7 +3,7 @@ from django import forms
 from .models import *
 
 
-class AfmetingenForm(ModelForm):
+class AfmetingenForm(forms.Form):
     lengte = forms.IntegerField(
         required=True,
         label="lengte",
@@ -24,4 +24,9 @@ class AfmetingenForm(ModelForm):
         widget=forms.NumberInput(
             attrs={"placeholder": "Wat is de hoogte?"}
         ),
-    )   
+    )
+    
+    
+    # class Meta:
+    #     model  = KamerAfmetingen
+    #     fields = ('breedte','lengte','hoogte')  

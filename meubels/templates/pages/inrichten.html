@@ -11,12 +11,13 @@
         <div class="col col-xs-12 col-sm-6">
             <form method="post">
                 {% csrf_token %}
+                <input type="hidden" name="afmetingen" value="1"/>
                 <div class="row">
                     <div class="col col-xs-12 dimensionsInput">
                         <label>
                             Afmetingen
                         </label> <br>
-                        {{ afmetingenForm.as_p }}                            
+                        {{ form }}                            
                     </div>
                 </div>
                 <div class="row">
@@ -32,22 +33,28 @@
             </form>
         </div>
         <div class="col col-xs-12 col-sm-6">
-            <p>Hier komen de mogelijke producten op basis van de afmetingen die links opgegeven zijn. Deze kun je dan aan je winkelwagentje toevoegen.</p>
-            <ul class="productenList">
-                <li class="productLine">
-                    <img src="images/empty.jpg">
-                    <b>Productnaam</b>
-                    <span>Kosten: <b>&euro;10,- per maand</b></span>
-                    <a href="product">Bekijken</a>
-                </li>
-            </ul>
-            <div class="row">
-                <div class="col col-xs-12">
-                    <form action="winkelwagen">
+            <p>Kies hier onder de producten die u wilt huren.</p>
+            <form method="post">
+                <ul class="productenList">
+                    {% for product in producten %}
+                        <li class="productLine">
+                            <input {{product.checked}} type="checkbox" name="producten[]" value="{{product.naam}}" />
+                            <img src="{{product.afbeelding}}}">
+                            <b>{{product.naam}}</b>
+                            <span>Kosten: <b>&euro;{{product.prijs}} per maand</b></span>
+                            <a href="product/{{product.naam}}">Bekijken</a>
+                        </li> 
+                    {% endfor %}
+                    
+                </ul>
+                <div class="row">
+                    <div class="col col-xs-12">
+                    
+                        {% csrf_token %}
                         <input type="submit" value="Invoeren">
-                    </form>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 {% endblock %}
