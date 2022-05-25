@@ -44,12 +44,26 @@ h1 {
     margin-bottom: 15px;
     background-color: #fff;
 }
+.room .roomOccupied{
+    position: Absolute;
+    width: 100%;
+    height: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #86a2cd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
 .dimensionsInput input{
     width:80px;
 }
 
 ul.productenList{
     list-style:none;
+    padding: 0;
 }
 ul.productenList li.productLine{
 
@@ -57,4 +71,8 @@ ul.productenList li.productLine{
 ul.productenList li.productLine img{
     width:50px;
     height:30px;
+}
+
+.bestellingForm input{
+    width:100%;
 }

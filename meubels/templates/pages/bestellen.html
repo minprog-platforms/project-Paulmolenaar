@@ -3,8 +3,57 @@
 {% block body %}
     <h1 class="titel">Uw bestelling</h1>
     <div class="row">
-        <div class="col col-xs-12">            
-            <input type="button" value="Bestelling afronden"/>
+        <div class="col col-xs-12">
+            <h3>Winkelwagen</h3>
+            <ul class="winkelwagen productenList">
+                {% for product in bestelling_producten %}
+                    <li class="productLine">
+                        <img src="{{product.afbeelding}}}">
+                        <b>{{product.naam}}</b>
+                        <span>Kosten: <b>&euro;{{product.prijs}} per maand</b></span>
+                    </li> 
+                {% endfor %}
+                <li>
+                    <hr>
+                    Productentotaal: <b>&euro; {{producten_totaal}} per maand</b>
+                </li>
+            </ul>
         </div>
     </div>
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">    
+            <div class="col col-xs-12 bestellingForm">
+                {{ form }}
+                <button style="margin-top:10px;" type="submit" name="update" value="1">Updaten</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-xs-12" style="margin-top:20px;">   
+                <label>Totaal aantal maanden:</label>
+                <p>{{totaal_maanden}}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-xs-12" style="margin-top:20px;">   
+                Totale reisafstand:
+                <b>{{totaal_reisafstand}} km</b>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-xs-12">   
+                Totale verzendkosten: <b>{{totaal_verzendkosten}}</b>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-xs-12">   
+                Totale kosten: <b>{{totaal_bestelling}}</b>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-xs-12" style="margin-top:20px;">            
+                <a href="afgerond">Betalen</a>
+            </div>
+        </div>
+    </form>
 {% endblock %}

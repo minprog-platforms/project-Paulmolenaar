@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col col-xs-12 col-sm-6">
+        <div class="col col-xs-12 col-sm-4">
             <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="afmetingen" value="1"/>
@@ -22,7 +22,9 @@
                 </div>
                 <div class="row">
                     <div class="col col-xs-12">
-                        <div class="room"></div>
+                        <div class="room">
+                            <div class="roomOccupied" style="height: {{ percentage }}%;">{{ percentage }}%</div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -32,29 +34,44 @@
                 </div>
             </form>
         </div>
-        <div class="col col-xs-12 col-sm-6">
+        <div class="col col-xs-12 col-sm-4">
             <p>Kies hier onder de producten die u wilt huren.</p>
             <form method="post">
+                {% csrf_token %}
                 <ul class="productenList">
                     {% for product in producten %}
                         <li class="productLine">
-                            <input {{product.checked}} type="checkbox" name="producten[]" value="{{product.naam}}" />
                             <img src="{{product.afbeelding}}}">
                             <b>{{product.naam}}</b>
                             <span>Kosten: <b>&euro;{{product.prijs}} per maand</b></span>
                             <a href="product/{{product.naam}}">Bekijken</a>
+                            <button name="productAdd" value="{{product.naam}}" type="submit">Toevoegen</button>
                         </li> 
                     {% endfor %}
                     
                 </ul>
-                <div class="row">
-                    <div class="col col-xs-12">
-                    
-                        {% csrf_token %}
-                        <input type="submit" value="Invoeren">
-                    </div>
-                </div>
             </form>
+        </div>
+        <div class="col col-xs-12 col-sm-4">
+            <h3>Winkelwagen</h3>
+            <form method="post">
+                {% csrf_token %}
+                <ul class="winkelwagen productenList">
+                    {% for product in bestelling_producten %}
+                        <li class="productLine">
+                            <img src="{{product.afbeelding}}}">
+                            <b>{{product.naam}}</b>
+                            <span>Kosten: <b>&euro;{{product.prijs}} per maand</b></span>
+                            <button name="productRemove" value="{{product.naam}}" type="submit">Verwijder</button>
+                        </li> 
+                    {% endfor %}
+                    <li>
+                        <hr>
+                    Totaal: <b>&euro; {{winkelwagen_totaal}} per maand</b>
+                    </li>
+                </ul>
+            </form>
+            <a class="button" href="bestellen">Bestellen</a>
         </div>
     </div>
 {% endblock %}

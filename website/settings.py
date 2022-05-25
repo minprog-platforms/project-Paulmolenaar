@@ -121,7 +121,3 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-# Positionstack.om API settings
-
-POS_STACK_KEY = '0a49c3bb9f792478c704cf51c39340b4'

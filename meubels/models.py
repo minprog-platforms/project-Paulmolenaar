@@ -46,11 +46,21 @@ class Bestellingen(models.Model):
     adres_postcode      = models.CharField(max_length=20)
     
     datum        = models.DateTimeField(default='1970-01-01 00:00')
-    prijs_totaal = models.FloatField(default=0) # prijs per maand
+    prijs_verzending = models.FloatField(default=0) # prijs per maand
+    prijs_maand = models.FloatField(default=0) # prijs per maand
+    prijs_totaal = models.FloatField(default=0) # prijs totaal
 
+    afstand        = models.IntegerField(default=0)
     afgerond       = models.BooleanField(default=False)
     datum_afgerond = models.DateTimeField(default='1970-01-01 00:00')
+    datum_tot      = models.DateTimeField(default='1970-01-01 00:00')
 
+    def productenTotaal(self):
+        totaalPrijs = 0
+        for productItem in self.producten.all():
+            totaalPrijs = totaalPrijs + productItem.prijs
+        
+        return totaalPrijs
 
 class KamerAfmetingen(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE, related_name='afmetingen_user')  
@@ -70,7 +80,3 @@ class KamerAfmetingen(models.Model):
 
     def __str__(self):
         return 'Afmetingen %s' % (self.user)
-
-# producten
-# product categorien
-# bestellingen

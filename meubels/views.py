@@ -1,4 +1,6 @@
+from queue import Empty
 from django.contrib.auth import authenticate, login, logout
+import datetime
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -7,6 +9,10 @@ from django.forms import ModelForm
 from django import forms
 from .models import *
 from .forms import *
+from .functions import *
+
+COORDS_MAGAZIJN  = [52.0843143, 4.9420627]
+VERZENDKOSTEN_KM = 1.5
 
 def index(request):    
     return render(request, "pages/index.html")
@@ -25,13 +31,9 @@ def kamer_inrichten(request):
         try:
             kamer = KamerAfmetingen.objects.get(user=request.user)
         except Exception:
-            print ("kamer does not exist")
             kamer = KamerAfmetingen.objects.create(user=request.user)
 
-        try:
-            bestelling = Bestellingen.objects.get(user=request.user, afgerond = False)
-        except Exception:
-            bestelling = Bestellingen.objects.create(user=request.user, afgerond = False)
+        bestelling = userKrijgLaatsteBestelling(request.user)
 
         form = AfmetingenForm()
         form.fields['breedte'].initial = kamer.afmeting_breedte
@@ -40,15 +42,20 @@ def kamer_inrichten(request):
 
         if request.method == "POST":
             producten = request.POST.getlist('producten[]')
-            if ('afmetingen' not in request.POST):
-                bestelling.producten.clear()
-                for productName in producten:
-                    product = Producten.objects.get(naam=productName)
-                    if product is not None:
-                        bestelling.producten.add(product)
+            if ('productAdd' in request.POST):
+                product = Producten.objects.get(naam=request.POST['productAdd'])
+                if product is not None:
+                    bestelling.producten.add(product)
 
                 bestelling.save()
-            else:
+            elif('productRemove' in request.POST):
+                product = Producten.objects.get(naam=request.POST['productRemove'])
+                if product is not None:
+                    if (product in bestelling.producten.all()):
+                        bestelling.producten.remove(product)
+
+                bestelling.save()
+            else: 
                 form = AfmetingenForm(request.POST)
                 
                 if (form.is_valid):                
@@ -58,29 +65,94 @@ def kamer_inrichten(request):
                     kamer.save()
 
         oppervlakte = kamer.berekenOppervlakte()
+        gebruikte_oppervlakte = 0
+        totaalPrijs = 0
+
+        for productItem in bestelling.producten.all():
+            gebruikte_oppervlakte = gebruikte_oppervlakte + productItem.afmeting_oppervlakte
+            totaalPrijs = totaalPrijs + productItem.prijs
+        
+        ongebruikte_oppervlakte = oppervlakte - gebruikte_oppervlakte
+
         productList = []
         for productItem in Producten.objects.all():
-            if (oppervlakte > productItem.afmeting_oppervlakte):
+            if (ongebruikte_oppervlakte > productItem.afmeting_oppervlakte):
                 productList.append(productItem)
-                if (bestelling.producten.filter(naam=productItem).exists()):
-                    productItem.checked = "checked"
-                else:
-                    productItem.checked = ""
 
-                oppervlakte = oppervlakte - productItem.afmeting_oppervlakte
+        percentage = round(float(( gebruikte_oppervlakte / oppervlakte ) * 100),1)
+
+        bestelling.prijs_maand = totaalPrijs
+        bestelling.save()
 
         return render(request, "pages/inrichten.html",{
             "form" : form,
-            "producten" : productList
+            "producten" : productList,
+            "bestelling_producten" : bestelling.producten.all(),
+            "winkelwagen_totaal" : totaalPrijs,
+            "percentage" : percentage
         })
     else:
         return render(request, "pages/login.html")
 
 def afgerond(request):
+
+    
+    bestelling = userKrijgLaatsteBestelling(request.user)
+    if (bestelling == None):
+        return HttpResponseRedirect(reverse("kamerinrichten"))
+
+    bestelling.afgerond = True
+    bestelling.datum_afgerond = datetime.now()
+    bestelling.datum = datetime.now()
+    bestelling.save()
+
     return render(request, "pages/afgerond.html")
 
 def bestellen(request):
-    return render(request, "pages/bestellen.html")    
+    if request.user.is_authenticated:
+        bestelling = userKrijgLaatsteBestelling(request.user)
+
+        form = BestellingForm()
+
+        form.fields['plaats'].initial           = bestelling.adres_plaats
+        form.fields['straat_nummer'].initial    = bestelling.adres_straat_nummer
+        form.fields['postcode'].initial         = bestelling.adres_postcode
+        
+        if (bestelling.datum_tot != '1970-01-01 00:00'):
+            form.fields['datum_tot'].initial         = bestelling.datum_tot
+
+        if request.method == "POST":
+            form = BestellingForm(request.POST)
+            
+            if (form.is_valid):                
+                bestelling.adres_plaats = request.POST['plaats']
+                bestelling.adres_straat_nummer = request.POST['straat_nummer']
+                bestelling.adres_postcode = request.POST['postcode']
+                bestelling.datum = datetime.now()
+                bestelling.datum_tot = datetime. strptime(form.data['datum_tot'], '%Y-%m-%d')
+
+                coords_klant = getCoords(bestelling.adres_plaats)
+
+                aantal_maanden = berekenMaanden(datetime.now(), bestelling.datum_tot)
+
+                bestelling.afstand = calculateLength(COORDS_MAGAZIJN, coords_klant)
+                bestelling.prijs_verzending = float(bestelling.afstand * VERZENDKOSTEN_KM)
+                bestelling.prijs_totaal = (bestelling.prijs_maand * aantal_maanden) + bestelling.prijs_verzending 
+                bestelling.save()
+
+        aantal_maanden = berekenMaanden(datetime.now(), bestelling.datum_tot)
+
+        return render(request, "pages/bestellen.html",{
+            "form": form,
+            "bestelling_producten" : bestelling.producten.all(),
+            "producten_totaal" : bestelling.productenTotaal(),
+            "totaal_maanden" : aantal_maanden,
+            "totaal_reisafstand" : bestelling.afstand,
+            "totaal_verzendkosten" : bestelling.prijs_verzending,
+            "totaal_bestelling" : bestelling.prijs_totaal,
+        })
+    else:
+        return render(request, "pages/login.html")    
 
 def winkelwagen(request):
     return render(request, "pages/winkelwagen.html")          
@@ -127,14 +199,10 @@ def register(request):
 
         # Attempt to create new user
         try:
-            print(username)
-            print(email)
             user = User.objects.create_user(username, email, password)            
             user.save()
             
         except IntegrityError as e: 
-            print("error: ")
-            print(e)
             return render(request, "pages/register.html", {
                 "message": "Username already taken."
             })
