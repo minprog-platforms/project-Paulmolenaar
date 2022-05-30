@@ -23,6 +23,18 @@ def product(request,product):
         "product" : currentProduct
     })
 
+def assortiment(request):
+    
+    producten_lijst = []
+    producten = Producten.objects.all()
+    for product in producten:
+        if (product.voorraad > 0):
+            producten_lijst.append(product)
+
+    return render(request, "pages/assortiment.html",{
+        "producten_lijst" : producten_lijst
+    })
+
 def kamer_inrichten(request):
 
     if request.user.is_authenticated:        
@@ -76,10 +88,16 @@ def kamer_inrichten(request):
 
         productList = []
         for productItem in Producten.objects.all():
+            if (productItem.voorraad <= 0):
+                continue
+            
             if (ongebruikte_oppervlakte > productItem.afmeting_oppervlakte):
                 productList.append(productItem)
 
-        percentage = round(float(( gebruikte_oppervlakte / oppervlakte ) * 100),1)
+        percentage = 0
+        if (oppervlakte > 0):
+            percentage = round(float(( gebruikte_oppervlakte / oppervlakte ) * 100),1)
+        
 
         bestelling.prijs_maand = totaalPrijs
         bestelling.save()
@@ -105,6 +123,10 @@ def afgerond(request):
     bestelling.datum_afgerond = datetime.now()
     bestelling.datum = datetime.now()
     bestelling.save()
+
+    for product in bestelling.producten.all():
+        product.voorraad = product.voorraad - 1
+        product.save()
 
     return render(request, "pages/afgerond.html")
 
@@ -145,11 +167,11 @@ def bestellen(request):
         return render(request, "pages/bestellen.html",{
             "form": form,
             "bestelling_producten" : bestelling.producten.all(),
-            "producten_totaal" : bestelling.productenTotaal(),
+            "producten_totaal" : round(bestelling.productenTotaal(),2),
             "totaal_maanden" : aantal_maanden,
-            "totaal_reisafstand" : bestelling.afstand,
-            "totaal_verzendkosten" : bestelling.prijs_verzending,
-            "totaal_bestelling" : bestelling.prijs_totaal,
+            "totaal_reisafstand" : round(bestelling.afstand,1),
+            "totaal_verzendkosten" : round(bestelling.prijs_verzending,2),
+            "totaal_bestelling" : round(bestelling.prijs_totaal,2),
         })
     else:
         return render(request, "pages/login.html")    

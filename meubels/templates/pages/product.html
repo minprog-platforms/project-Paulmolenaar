@@ -1,10 +1,11 @@
 {% extends "pages/layout.html" %}
 
 {% block body %}
+<div class="container">
     <h1 class="titel">{{product.naam}}</h1>
     <div class="row">
         <div class="col col-xs-12 col-sm-6">            
-            <img src="{{product.afbeelding}}"/>
+            <img src="{{product.afbeelding}}" class="productImage"/>
         </div>
         <div class="col col-xs-12 col-sm-6">            
             <h3>Prijs: &euro;{{product.prijs}}/maand</h3>
@@ -15,4 +16,5 @@
             <a href="/kamerinrichten">Terug</a>  
         </div>
     </div>
+</div>
 {% endblock %}

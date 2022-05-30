@@ -1,6 +1,7 @@
 {% extends "pages/layout.html" %}
 
 {% block body %}
+<div class="container">
     <h1 class="titel">Kies uw inrichting</h1>
     <div class="row">
         <div class="col col-xs-12">
@@ -14,22 +15,16 @@
                 <input type="hidden" name="afmetingen" value="1"/>
                 <div class="row">
                     <div class="col col-xs-12 dimensionsInput">
-                        <label>
-                            Afmetingen
-                        </label> <br>
+                        <h3>Afmetingen</h3>
                         {{ form }}                            
+                        <input class="button" style="margin-top:10px;" type="submit" value="Invoeren">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col col-xs-12">
-                        <div class="room">
+                        <div class="room boxShadow">
                             <div class="roomOccupied" style="height: {{ percentage }}%;">{{ percentage }}%</div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-xs-12">
-                        <input type="submit" value="Invoeren">
                     </div>
                 </div>
             </form>
@@ -38,7 +33,7 @@
             <p>Kies hier onder de producten die u wilt huren.</p>
             <form method="post">
                 {% csrf_token %}
-                <ul class="productenList">
+                <ul class="productenList boxShadow">
                     {% for product in producten %}
                         <li class="productLine">
                             <img src="{{product.afbeelding}}}">
@@ -56,7 +51,7 @@
             <h3>Winkelwagen</h3>
             <form method="post">
                 {% csrf_token %}
-                <ul class="winkelwagen productenList">
+                <ul class="winkelwagen productenList boxShadow">
                     {% for product in bestelling_producten %}
                         <li class="productLine">
                             <img src="{{product.afbeelding}}}">
@@ -67,11 +62,12 @@
                     {% endfor %}
                     <li>
                         <hr>
-                    Totaal: <b>&euro; {{winkelwagen_totaal}} per maand</b>
+                        <span class="totalSpan">Totaal: <b>&euro; {{winkelwagen_totaal}} per maand</b></span>
                     </li>
                 </ul>
             </form>
             <a class="button" href="bestellen">Bestellen</a>
         </div>
     </div>
+</div>
 {% endblock %}

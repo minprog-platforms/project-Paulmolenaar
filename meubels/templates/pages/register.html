@@ -1,30 +1,30 @@
 {% extends "pages/layout.html" %}
 
 {% block body %}
-
+<div class="container">
     <h2>Register</h2>
 
     {% if message %}
         <div>{{ message }}</div>
     {% endif %}
-
-    <form action="{% url 'register' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <input class="form-control" autofocus type="text" name="username" placeholder="Username">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="email" name="email" placeholder="Email Address">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
-        </div>
-        <input class="btn btn-primary" type="submit" value="Register">
-    </form>
-
-    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
-
+    <div class="textBox registerBox">
+        <form action="{% url 'register' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <input class="form-control" autofocus type="text" name="username" placeholder="Account">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="email" name="email" placeholder="Emailadres">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="password" placeholder="Wachtwoord">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="confirmation" placeholder="Wachtwoord herhalen">
+            </div>
+            <input class="btn btn-primary" type="submit" value="Register">
+        </form>
+        Heb je al een account? <a href="{% url 'login' %}">Klik hier om in te loggen</a>
+    </div>
+</div>
 {% endblock %}

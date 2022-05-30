@@ -53,7 +53,7 @@ class Bestellingen(models.Model):
     afstand        = models.IntegerField(default=0)
     afgerond       = models.BooleanField(default=False)
     datum_afgerond = models.DateTimeField(default='1970-01-01 00:00')
-    datum_tot      = models.DateTimeField(default='1970-01-01 00:00')
+    datum_tot      = models.DateTimeField(default='2022-01-01 00:00')
 
     def productenTotaal(self):
         totaalPrijs = 0

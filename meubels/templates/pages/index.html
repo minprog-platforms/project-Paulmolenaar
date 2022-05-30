@@ -1,11 +1,46 @@
 {% extends "pages/layout.html" %}
 
 {% block body %}
-    <h1 class="titel">Welkom op onze website!</h1>
-    <div class="row">
-        <div class="col col-xs-12">
-            <p>Wij genereren bijpassende meubels aan de hand van uw kamerplattegrond!</p>
-            <a href="kamerinrichten">Klik hier om uw kamer specificaties op te geven!</a>
+{% load static %}
+<div class="jumbotron homePageBackground" style="background-image:url({% static "meubels/images/home_background.jpeg" %});">
+    <div class="container">
+        <div class="row">
+            <div class="col col-xs-6 homepageText">
+                <h1>Niet kopen, maar huren!</h1>
+                <p>Flexibel, duurzaam en betaalbaar. Dat zijn de kernwaarden van Thuiswerkmeubels.nl<br>
+                Wij bieden hoogwaardige producten voor een betaalbare prijs.</br>
+                Met het huren in plaats van kopen van meubels houd je geld in je portemonnee vrij voor belangrijkere dingen.</br></br>
+                
+                <h3>Onze meubels</h3>
+                Alle meubels zijn handmatig gemaakt in onze hometown Volendam en gemaakt van lokale grondstoffen!
+                Zo stimuleren wij de plaatselijke economie en dragen wij ons steentje bij bij het behouden van moeder natuur :) </p>                     
+            </div>
+            <div class="col-xs-6 col"></div>
         </div>
     </div>
+</div>
+
+<div class="jumbotron homeKnoppen">
+    <div class="container">
+        <div class="row">
+            <div class="col col-xs-6">
+                <a href="kamerinrichten">
+                    <div class="largeButton boxShadow" style="background-image:url({% static "meubels/images/afbeelding2_homepage.jpg" %});">
+                        <h2>Kamer inrichten</h2>
+                        <p>U kunt middels de afmetingen van uw kamer de producten samenstellen.<br>Klik hier om te beginnen!</p>                        
+                    </div>
+                </a>
+            </div> 
+            <div class="col-xs-6 col">
+                <a href="assortiment">
+                    <div class="largeButton boxShadow" style="background-image:url({% static "meubels/images/afbeelding3_homepage.jpg" %});">
+                        <h2>Assortiment</h2>
+                        <p>Nieuwsgierig naar wat we te bieden hebben? Klik hier om ons assortiment te bekijken.</p>   
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

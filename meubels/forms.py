@@ -8,21 +8,21 @@ import datetime
 class AfmetingenForm(forms.Form):
     lengte = forms.IntegerField(
         required=True,
-        label="lengte",
+        label="Lengte (cm)",
         widget=forms.NumberInput(
             attrs={"placeholder": "Wat is de lengte?"}
         ),
     )   
     breedte = forms.IntegerField(
         required=True,
-        label="breedte",
+        label="Breedte (cm)",
         widget=forms.NumberInput(
             attrs={"placeholder": "Wat is de breedte?"}
         ),
     )   
     hoogte = forms.IntegerField(
         required=True,
-        label="hoogte",
+        label="Hoogte (cm)",
         widget=forms.NumberInput(
             attrs={"placeholder": "Wat is de hoogte?"}
         ),
@@ -54,7 +54,7 @@ class BestellingForm(forms.Form):
     datum_tot = forms.DateField(
         required=True,
         label="Einddatum",
-        widget=forms.DateInput(
+        widget=forms.DateInput(            
             attrs={"min": datetime.datetime.now(), "type":"date"}
         ),
     )

@@ -1,0 +1,21 @@
+{% extends "pages/layout.html" %}
+
+{% block body %}
+<div class="container">
+    <h1 class="titel">Assortiment</h1>
+    <div class="row productenLijst">
+        
+        {% for product in producten_lijst %}
+            <div class="col col-xs-6">
+                <div class="productItem boxShadow">
+                    <img src="{{product.afbeelding}}}">
+                    <b>{{product.naam}}</b>
+                    <span>Kosten: <b>&euro;{{product.prijs}} per maand</b></span>
+                    <a class="button" href="product/{{product.naam}}">Bekijken</a>
+                </div>
+            </div>
+        {% endfor %}
+        
+    </div>
+</div>
+{% endblock %}

@@ -27,21 +27,21 @@ def getCoords(location):
     data = res.read()
 
     text = data.decode('utf-8')
-    print(text)
 
     jsonObject = json.loads(text)
-    print (jsonObject['data'][0]['latitude'])
     return [jsonObject['data'][0]['latitude'],jsonObject['data'][0]['longitude']]
 
 def berekenMaanden(start_date: datetime , end_date: datetime) -> int:
     num_months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month)
+    if (num_months < 0):
+        num_months = 0
     return num_months
 
 def userKrijgLaatsteBestelling(user):
     geenBestellingGevonden = True
 
     bestelling = None
-    
+
     try:
         bestelling = Bestellingen.objects.filter(user=user).filter(afgerond = False).first()
         

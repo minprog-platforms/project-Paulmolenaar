@@ -1,10 +1,11 @@
 {% extends "pages/layout.html" %}
 
 {% block body %}
+<div class="container">
     <h1 class="titel">Uw bestelling</h1>
     <div class="row">
-        <div class="col col-xs-12">
-            <h3>Winkelwagen</h3>
+        <h3>Winkelwagen</h3>
+        <div class="col col-xs-12 col-sm-6">            
             <ul class="winkelwagen productenList">
                 {% for product in bestelling_producten %}
                     <li class="productLine">
@@ -15,45 +16,36 @@
                 {% endfor %}
                 <li>
                     <hr>
-                    Productentotaal: <b>&euro; {{producten_totaal}} per maand</b>
+                    <span class="totalSpan">Productentotaal: <b>&euro; {{producten_totaal}} per maand</b></span>
                 </li>
             </ul>
         </div>
-    </div>
-    <form method="post">
-        {% csrf_token %}
-        <div class="row">    
-            <div class="col col-xs-12 bestellingForm">
+        <div class="col col-xs-12 col-sm-6 bestellingForm">
+            <form method="post">
+                {% csrf_token %}            
                 {{ form }}
                 <button style="margin-top:10px;" type="submit" name="update" value="1">Updaten</button>
+            </form>
+        </div>        
+    </div>
+
+    <div class="row">
+        <div class="col col-xs-12">   
+            <div class="boxShadow bestellingTotal">
+                <p>Totaal aantal maanden: <b>{{totaal_maanden}}</b></p>                    
+                <p>Totale reisafstand: <b>{{totaal_reisafstand}} km</b></p>
+                <hr>
+                <p>Eerste termijn: <b>&euro;{{producten_totaal}}</b></p>
+                <p>Verzendkosten: <b>&euro;{{totaal_verzendkosten}}</b></p>
+                <p>Totale kosten: <b><u>&euro;{{totaal_bestelling}}</u></b></p>
             </div>
         </div>
-        <div class="row">
-            <div class="col col-xs-12" style="margin-top:20px;">   
-                <label>Totaal aantal maanden:</label>
-                <p>{{totaal_maanden}}</p>
-            </div>
+    </div>
+    <div class="row">
+        <div class="col col-xs-12" style="margin-top:20px;">            
+            <a class="button" style="float:left;" href="kamerinrichten">Terug</a>
+            <a class="button" style="float:right;" href="afgerond">Betalen</a>
         </div>
-        <div class="row">
-            <div class="col col-xs-12" style="margin-top:20px;">   
-                Totale reisafstand:
-                <b>{{totaal_reisafstand}} km</b>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-xs-12">   
-                Totale verzendkosten: <b>{{totaal_verzendkosten}}</b>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-xs-12">   
-                Totale kosten: <b>{{totaal_bestelling}}</b>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-xs-12" style="margin-top:20px;">            
-                <a href="afgerond">Betalen</a>
-            </div>
-        </div>
-    </form>
+    </div>
+</div>
 {% endblock %}

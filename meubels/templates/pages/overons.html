@@ -1,11 +1,22 @@
 {% extends "pages/layout.html" %}
 
 {% block body %}
+
+{% load static %}
+<div class="container">
     <h1 class="titel">Over ons</h1>
-    <div class="row">
-        <div class="col col-xs-12">
+    <div class="row textBox">
+        <div class="col col-xs-6">
             <h2>Wie zijn wij?</h2>
-            <p>Ik ben Paul en volg momenteel een master Accountancy aan de Universiteit van Amsterdam.</p>
+            <p>Ik ben Paul en ik ben de CEO, COO en elk mogelijke andere C van Thuiswerkmeubels.nl<br>
+                Momenteel volg ik de MsC Accountancy & Control aan de Universiteit van Amsterdam.
+            </p>
+            <p>De minor programmeren heb ik gevolgd gedurende mijn bachelor Bedrijfskunde, maar heb ik destijds niet gehaald.
+                Daarom ben ik hier nu om jullie te vergezellen! </p>
+        </div>
+        <div class="col col-xs-6" style="text-align:right;">
+            <img src="{% static 'meubels/images/afbeelding1_overons.jpeg' %}">
         </div>
     </div>
+</div>
 {% endblock %}
