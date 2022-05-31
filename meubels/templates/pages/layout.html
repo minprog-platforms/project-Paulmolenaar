@@ -22,20 +22,20 @@
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                        <a class="nav-link" href="{% url 'logout' %}">Uitloggen</a>
                     </li>
                     <li class="nav-item"> 
-                        <span>Signed in as <strong>{{ user.username }}</strong>.</span>
+                        <span>Hallo <strong>{{ user.username }}</strong>.</span>
                     </li>
                     <li class="nav-item"> 
                         <a class="nav-link" href="{% url 'winkelwagen' %}">Winkelwagen</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                        <a class="nav-link" href="{% url 'login' %}">Inloggen</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                        <a class="nav-link" href="{% url 'register' %}">Registreren</a>
                     </li>
                 {% endif %}   
             </ul>    

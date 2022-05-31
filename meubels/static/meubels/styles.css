@@ -114,6 +114,7 @@ input,select{
     margin-bottom: 15px;
     background-color: #fff;
 }
+/* het object met class .roomoccipied vult de room op */
 .room .roomOccupied{
     position: Absolute;
     width: 100%;
@@ -121,11 +122,13 @@ input,select{
     left: 0;
     bottom: 0;
     background-color: #86a2cd;
+    color: white;
+
+    /* dit deel zorgt dat de text gecentreerd wordt in breedte en hoogte */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    color: white;
+    justify-content: center;    
 }
 
 .dimensionsInput label{
@@ -135,19 +138,25 @@ input,select{
     width:100%;
 }
 
+/* lijst voor keuze / weergave producten */
 ul.productenList{
+    /* geen list-stip */
     list-style: none;
+
     padding: 7px;
-    background-color: white;
-    float: left;
+    background-color: white;    
     border-radius: 8px;
     width: 100%;
+
+    float: left;
 }
 ul.productenList li.productLine{
     padding: 10px 5px;
     border-bottom: 1px solid #ddd;
     font-size:14px;
     width: 100%;
+
+    /* zowel productenlist als productline zijn float:left, hierdoor groeit de productenlist mee met de items */
     float: left;
 }
 ul.productenList li.productLine img{
@@ -161,20 +170,26 @@ ul.productenList li.productLine > b{
 }
 ul.productenList li.productLine span{
     padding-bottom:8px;
+
+    /* de span in het lititem moet als een block weergeven worden (zodat padding kan), maar zich wel als tekst gedragen */
     display: inline-block;
 }
 ul.productenList li.productLine button
-{
-    float:right;
+{    
     border: 0;
     padding: 2px 8px;
     border-bottom: 2px solid #ddd;
+
+    /* weergeef knop aan rechter kant van listitem */
+    float:right;
 }
 ul.productenList span.totalSpan{
     padding: 10px 0;
-    width: 100%;
-    float: left;
+    width: 100%;    
     text-align: right;
+
+    /* wederom, om productenlist ook mee te laten groeien met het totalenvak */
+    float: left;
 }
 
 /* bestellen */

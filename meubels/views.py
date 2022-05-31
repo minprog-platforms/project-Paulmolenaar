@@ -18,13 +18,16 @@ def index(request):
     return render(request, "pages/index.html")
 
 def product(request,product):
+    # weergeef product, afhankelijk van de naam in de url
+
     currentProduct = Producten.objects.get(naam=product)
     return render(request, "pages/product.html",{
         "product" : currentProduct
     })
 
 def assortiment(request):
-    
+    # weergeef alle producten uit het assortiment wanneer deze in voorraad zijn
+
     producten_lijst = []
     producten = Producten.objects.all()
     for product in producten:
@@ -36,31 +39,42 @@ def assortiment(request):
     })
 
 def kamer_inrichten(request):
+    # weergeef het kamer inricht scherm wanneer de gebruiker is ingelogd
 
     if request.user.is_authenticated:        
+        # zet lege een kamer gereed
         kamer = KamerAfmetingen()
 
         try:
+            # probeer de kamer van de gebruiker op te halen uit database
             kamer = KamerAfmetingen.objects.get(user=request.user)
         except Exception:
+            # wanneer dit niet lukt, maak een nieuwe aan voor de gebruiker
             kamer = KamerAfmetingen.objects.create(user=request.user)
 
+        # verkrijg laatste openstaande bestelling van gebruiker
         bestelling = userKrijgLaatsteBestelling(request.user)
 
+        # haal de afmetingen van de kamer op, zodat deze alvast in het formulier worden weergeven
         form = AfmetingenForm()
         form.fields['breedte'].initial = kamer.afmeting_breedte
         form.fields['lengte'].initial  = kamer.afmeting_lengte
         form.fields['hoogte'].initial  = kamer.afmeting_hoogte
 
-        if request.method == "POST":
+        if request.method == "POST":            
             producten = request.POST.getlist('producten[]')
+
             if ('productAdd' in request.POST):
+                # als een post is geplaatst voor het toevoegen van een product, voeg deze toe aan de bestelling
+
                 product = Producten.objects.get(naam=request.POST['productAdd'])
                 if product is not None:
                     bestelling.producten.add(product)
 
                 bestelling.save()
             elif('productRemove' in request.POST):
+                # als een post is geplaatst voor het verwijderen van een product, verwijder deze uit de bestelling
+
                 product = Producten.objects.get(naam=request.POST['productRemove'])
                 if product is not None:
                     if (product in bestelling.producten.all()):
@@ -68,6 +82,8 @@ def kamer_inrichten(request):
 
                 bestelling.save()
             else: 
+                # als het formuliers is gepost, en deze valide is, sla dan de nieuwe afmetingen op in de kamer van de gebruiker
+
                 form = AfmetingenForm(request.POST)
                 
                 if (form.is_valid):                
@@ -76,14 +92,17 @@ def kamer_inrichten(request):
                     kamer.afmeting_hoogte  = int(request.POST['hoogte'])
                     kamer.save()
 
+        # aan de hand van de afmetingen in de kamer, wordt het oppervlakte uitgerekend
         oppervlakte = kamer.berekenOppervlakte()
         gebruikte_oppervlakte = 0
         totaalPrijs = 0
 
+        # tel alle oppervlaktes van de geselecteerde producten bij elkaar op
         for productItem in bestelling.producten.all():
             gebruikte_oppervlakte = gebruikte_oppervlakte + productItem.afmeting_oppervlakte
             totaalPrijs = totaalPrijs + productItem.prijs
         
+        # trek dit oppervlakte af van het oppervlakte van de kamer om hiermee uiteindelijk het verbruikte stuk te verkijgen
         ongebruikte_oppervlakte = oppervlakte - gebruikte_oppervlakte
 
         productList = []
@@ -91,6 +110,7 @@ def kamer_inrichten(request):
             if (productItem.voorraad <= 0):
                 continue
             
+            # bouw de lijst op met producten welke nog passen in het ongebruikte oppervlakte van de kamer
             if (ongebruikte_oppervlakte > productItem.afmeting_oppervlakte):
                 productList.append(productItem)
 
@@ -98,7 +118,8 @@ def kamer_inrichten(request):
         if (oppervlakte > 0):
             percentage = round(float(( gebruikte_oppervlakte / oppervlakte ) * 100),1)
         
-
+        # de uitgerekende prijs (totalen van alle producten) wordt opgeslagen in bestelling.
+        # door dit steeds op te slaan wordt voorkomen dat de gebruiker niet de meest recente prijs heeft.
         bestelling.prijs_maand = totaalPrijs
         bestelling.save()
 
@@ -114,16 +135,20 @@ def kamer_inrichten(request):
 
 def afgerond(request):
 
-    
+    # verkrijg de huidige/laatste openstaande bestelling van de gebruiker
     bestelling = userKrijgLaatsteBestelling(request.user)
+
     if (bestelling == None):
+        # wanneer deze niet bestaat dient de gebruiker eerst een nieuwe bestelling te starten via de inricht-pagina
         return HttpResponseRedirect(reverse("kamerinrichten"))
 
+    # markeer de bestgelling als afgerond, hierdoor wordt deze niet meer opstaand.
     bestelling.afgerond = True
     bestelling.datum_afgerond = datetime.now()
     bestelling.datum = datetime.now()
     bestelling.save()
 
+    # ook wordt de voorraad van alle producten bijgewerkt.
     for product in bestelling.producten.all():
         product.voorraad = product.voorraad - 1
         product.save()
@@ -136,28 +161,36 @@ def bestellen(request):
 
         form = BestellingForm()
 
+        # zet het formulier klaar met de reeds bekende gegevens uit de bestelling
         form.fields['plaats'].initial           = bestelling.adres_plaats
         form.fields['straat_nummer'].initial    = bestelling.adres_straat_nummer
         form.fields['postcode'].initial         = bestelling.adres_postcode
         
         if (bestelling.datum_tot != '1970-01-01 00:00'):
-            form.fields['datum_tot'].initial         = bestelling.datum_tot
+            form.fields['datum_tot'].initial = bestelling.datum_tot
 
         if request.method == "POST":
             form = BestellingForm(request.POST)
             
             if (form.is_valid):                
+                # wanneer het bestellings-formulier valide is gepost, worden deze gegevens
+                # overgezet naar de bestelling.
+
                 bestelling.adres_plaats = request.POST['plaats']
                 bestelling.adres_straat_nummer = request.POST['straat_nummer']
                 bestelling.adres_postcode = request.POST['postcode']
                 bestelling.datum = datetime.now()
                 bestelling.datum_tot = datetime. strptime(form.data['datum_tot'], '%Y-%m-%d')
 
+                # middels de getCoords() functie wordt de (echte) GPS-locatie opgehaald van de ingevoerde plaats
                 coords_klant = getCoords(bestelling.adres_plaats)
 
                 aantal_maanden = berekenMaanden(datetime.now(), bestelling.datum_tot)
 
+                # middels calculateLength wordt de afstand bepaald tussen het magazijn en de ingevoerde plaats.
                 bestelling.afstand = calculateLength(COORDS_MAGAZIJN, coords_klant)
+                
+                # afhankelijk van deze afstand wordt de prijs van de verzending bepaald. En opgslagen in de bestelling
                 bestelling.prijs_verzending = float(bestelling.afstand * VERZENDKOSTEN_KM)
                 bestelling.prijs_totaal = (bestelling.prijs_maand * aantal_maanden) + bestelling.prijs_verzending 
                 bestelling.save()
@@ -182,12 +215,12 @@ def winkelwagen(request):
 def login_view(request):
     if request.method == "POST":
 
-        # Attempt to sign user in
+        # Probeer de gebruiker in te loggen met de ingevoerde gegevens
         username = request.POST["username"]
         password = request.POST["password"]
         user = authenticate(request, username=username, password=password)
 
-        # Check if authentication successful
+        # Controleer of de user valide is.
         if user is not None:
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
@@ -211,7 +244,7 @@ def register(request):
         username = request.POST["username"]
         email = request.POST["email"]
 
-        # Ensure password matches confirmation
+        # Controleer of de wachtwoorden overeen komen met elkaar
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
@@ -219,7 +252,7 @@ def register(request):
                 "message": "Passwords must match."
             })
 
-        # Attempt to create new user
+        # Maak nieuwe gebruiker aan.
         try:
             user = User.objects.create_user(username, email, password)            
             user.save()
