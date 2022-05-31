@@ -1,4 +1,8 @@
 ## Gitignore file ##
 
-pycache/
+## caches ##
+__pycache__
+__pycache__/
+
+## migrations ##
 migrations/
